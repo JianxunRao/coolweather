@@ -8,6 +8,7 @@ import com.coolweather.app.util.HttpUtil;
 import com.coolweather.app.util.Utility;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,7 +46,7 @@ public class WeatherActivity extends Activity {
 		currentDateText = (TextView) findViewById(R.id.tv_current_date);
 		countyCode = getIntent().getStringExtra("county_code");
 		if(!TextUtils.isEmpty(countyCode)){
-			publishText.setText("同步中");
+			publishText.setText("同步中...");
 			weatherInfoLayout.setVisibility(View.INVISIBLE);
 			cityNameText.setVisibility(View.INVISIBLE);
 			queryWeatherCode(countyCode);
@@ -130,5 +131,23 @@ public class WeatherActivity extends Activity {
 		currentDateText.setText(preferences.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+	}
+	/**
+	 * 切换城市按钮逻辑
+	 * @param v
+	 */
+	public void switchCity(View v){
+		Intent intent=new Intent(this,ChooseAreaActivity.class);
+		intent.putExtra("from_weather_activity", true);
+		startActivity(intent);
+		finish();
+	}
+	public void refresh(View v){
+		publishText.setText("同步中...");
+		SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(this);
+		String weatherCode=preferences.getString("weather_code", "");
+		if (!TextUtils.isEmpty(weatherCode)) {
+			queryWeatherInfo(weatherCode);
+		}
 	}
 }
